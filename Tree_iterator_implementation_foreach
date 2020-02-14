@@ -1,0 +1,142 @@
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+template<typename T1>
+struct Node {
+	Node  *left;
+	Node  *right;
+	T1 value;
+	Node(T1 value) {
+		this->value = value;
+		left = right = nullptr;
+	};
+};
+
+template<class T>
+class Tree {
+private:
+	stack<Node<T> * > q;
+	int * a = new int[10000];
+public:
+	//////iterator implementation
+	void past(Node<T> * root) {
+		Node<T> * curr = root;
+		while (curr != nullptr)
+			q.push(curr), curr = curr->left;
+	}
+
+	Node<T> * curr() {
+		if (!q.empty())
+			return q.top();
+		return nullptr;
+	}
+
+	void next() {
+		Node<T> * curr = q.top()->right;
+		q.pop();
+		while (curr != nullptr)
+			q.push(curr), curr = curr->left;
+	}
+	bool tree_empty() {
+		return !(q.size());
+	}
+	void print_tree_with_iterator(Tree * bst) {
+        int i = 0;
+		while (!tree_empty()) {
+		    a[i] = (bst->curr()->value);
+		    
+		     bst->next();
+		     i++;
+		}
+        
+        
+      
+        
+	}
+	
+	void list(int * c, int n) {
+	    for(int i = 0; i < n; i++) {
+	        c[i] = a[i];   
+	    }
+	}
+	//////////////////////
+
+
+	void insert(Node<T> *root, T val) {
+		if (root->value > val) {
+			if (!root->left) {
+				root->left = new Node<T>(val);
+			}
+			else {
+				insert(root->left, val);
+			}
+		}
+		else {
+			if (!root->right) {
+				root->right = new Node<T>(val);
+			}
+			else {
+				insert(root->right, val);
+			}
+		}
+	}
+
+	void print(Node<T> *root) {
+		if (!root) return;
+		print(root->left);
+		std::cout << root->value << " ";
+		print(root->right);
+	}
+
+	bool find(Node<T> *root, T val) {
+		if (root == nullptr) return 0;
+		if (root->value == val) return 1;
+		if (find(root->left, val)) return 1;
+		return find(root->right, val);
+	}
+
+	T find_min(Node<T> *root) {
+		if (root->left == nullptr)
+			return root->value;
+		return find_min(root->left);
+
+	}
+
+	T find_max(Node<T> *root) {
+		if (root->right == nullptr)
+			return root->value;
+		return find_max(root->right);
+	}
+
+
+};
+
+int main() {
+	srand(time(NULL));
+	int n;
+	cin >> n;
+	int * a = new int[n];
+
+	Node<int> * root = new Node<int>(rand() % 1000);
+	Tree<int> * tree = new Tree<int>();
+
+	for (int i = 1; i < n; i++) {
+		a[i] = rand() % 1000;
+		tree->insert(root, a[i]);
+	}
+
+	tree->past(root);
+
+	tree->print_tree_with_iterator(tree);
+	
+    int l[n];
+    
+    tree->list(l, n);
+    
+    for(auto i : l) cout << i << endl;
+   
+
+	return 0;
+}
